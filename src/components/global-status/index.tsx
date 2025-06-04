@@ -17,6 +17,8 @@ export const GlobalStatus = () => {
   const onClick = async (v: IGlobalStatus) => {
     useCategoryStore.getState().setGlobalStatus(v);
     setStatus(v);
+
+    await browser.runtime.sendMessage({ update: true });
   };
 
   return (

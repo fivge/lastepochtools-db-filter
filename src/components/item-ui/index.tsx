@@ -13,10 +13,6 @@ export const ItemUI = (props: IProps) => {
   const [status, setStatus] = useState<IStatus>();
   const [globalStatus, setGlobalStatus] = useState<IGlobalStatus>();
 
-  if (id === "IIwBj-I") {
-    console.log("********* render ItemUI", el, id, status);
-  }
-
   useEffect(() => {
     const init = async () => {
       const newStatus =
@@ -29,9 +25,12 @@ export const ItemUI = (props: IProps) => {
       setGlobalStatus(newGlobalStatus);
     };
 
-    if (id === "IIwBj-I") {
-      console.log("********* mount ItemUI", el, id);
-    }
+    browser.runtime.onMessage.addListener((message, _, sendResponse) => {
+      const newGlobalStatus = useCategoryStore.getState().globalStatus;
+
+      setGlobalStatus(newGlobalStatus);
+      return true;
+    });
 
     init();
   }, []);
