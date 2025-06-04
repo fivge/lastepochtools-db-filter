@@ -1,91 +1,71 @@
-import { IStatus } from "@/entrypoints/content/shared/types";
+import { IGlobalStatus, IStatus } from "@/entrypoints/content/shared/types";
 import { useCategoryStore } from "@/entrypoints/content/shared/useCategoryStore";
 
 interface IProps {
-  // status?: IStatus;
   el: Element;
   category: string;
   id: string | null;
 }
 
-const status = "default";
 export const ItemUI = (props: IProps) => {
   const { el, category, id } = props;
-  // const [status, setItem] = useCategoryStore((s) => [
-  //   s[category]?.items?.[id ?? "_____"],
-  //   s.setItem,
-  // ]);
-  // const [fooo2] = useCategoryStore((s) => [s]);
 
-  // type status = "default" | "favor" | "hidden";
-
-  const xx2 = useCategoryStore.getState()[category]?.items?.[id ?? "_____"];
+  const [status, setStatus] = useState<IStatus>();
+  const [globalStatus, setGlobalStatus] = useState<IGlobalStatus>();
 
   if (id === "IIwBj-I") {
-    // console.log("********* render ItemUI", status, el, id);
-
-    console.log("********* render ItemUI", el, id, xx2);
+    console.log("********* render ItemUI", el, id, status);
   }
 
   useEffect(() => {
     const init = async () => {
-      const status =
+      const newStatus =
         useCategoryStore.getState()[category]?.items?.[id ?? "_____"];
-      handleStatus(status);
 
-      // if (status === "hidden") {
-      //   (el as any).style.setProperty("display", "none");
-      // } else if (status === "favor") {
-      //   (el as any).style.setProperty("background-color", "#FFA500");
-      // }
+      setStatus(newStatus);
 
-      // const fooo = await storage.getItem<string | null>(
-      //   `local:lastepochtools_category`
-      // );
-      // console.log("********* fooo", fooo);
+      const newGlobalStatus = useCategoryStore.getState().globalStatus;
+
+      setGlobalStatus(newGlobalStatus);
     };
 
     if (id === "IIwBj-I") {
       console.log("********* mount ItemUI", el, id);
     }
+
     init();
   }, []);
 
-  // useEffect(() => {
-  //   if (id === "IIwBj-I") {
-  //     console.log("********* status change", status);
-  //   }
-  // }, [status]);
+  useEffect(() => {
+    handleStatus();
+  }, [status, globalStatus]);
 
-  // items
-
-  const onClick = async (v: IStatus) => {
-    // storage.clear("local");
-
-    const xx = useCategoryStore.getState();
-    console.log("*********** xx", xx);
+  const onClick = async (newStatus: IStatus) => {
     if (id) {
-      useCategoryStore.getState().setItem(category, id, v);
+      useCategoryStore.getState().setItem(category, id, newStatus);
     }
 
-    const fooo = await storage.getItem<string | null>(
-      `local:lastepochtools_category_4`
-    );
-    handleStatus(v);
-    const fooo3 = await storage.snapshot(`local`);
-    console.log("********* fooo", fooo, fooo3);
+    setStatus(newStatus);
   };
 
-  const handleStatus = (v?: IStatus) => {
-    if (v === "hidden") {
+  const handleStatus = () => {
+    if (status === "hidden") {
       (el as any).style.setProperty("display", "none");
-
-      // #ADD8E6A0
-    } else if (v === "favor") {
-      (el as any).style.setProperty("background-color", "#FFC1CC");
+      (el as any).style.setProperty("background-color", "#ADD8E6A0");
+    } else if (status === "favor") {
+      (el as any).style.setProperty("background-color", "#FFC1CCA0");
     } else {
       (el as any).style.setProperty("background-color", "unset");
       (el as any).style.setProperty("display", "unset");
+    }
+
+    if (globalStatus === "all") {
+      (el as any).style.setProperty("display", "unset");
+    } else if (globalStatus === "favor") {
+      if (status !== "favor") {
+        (el as any).style.setProperty("display", "none");
+      }
+    } else {
     }
   };
 

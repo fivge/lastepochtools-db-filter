@@ -1,30 +1,31 @@
-import { create, createStore } from "zustand";
+import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { shallow } from "zustand/shallow";
-// import { createWithEqualityFn } from "zustand/traditional";
-// import { storage as wxtStorage } from "#imports";
-import { IStatus } from "./types";
-import { createWithEqualityFn } from "zustand/traditional";
+import { IGlobalStatus, IStatus } from "./types";
 
-type ICategoryStoreState = {
-  // context: {
-  [category: string]: {
-    items?: Record<string, IStatus>;
-    prefixes?: Record<string, IStatus>;
-    suffixes?: Record<string, IStatus>;
-  };
-  // };
-};
+interface ICategoryStoreStateBase {
+  globalStatus: IGlobalStatus;
+}
 
-type ICategoryStoreActions = {
-  // actions: {
+interface ICategory {
+  items?: Record<string, IStatus>;
+  prefixes?: Record<string, IStatus>;
+  suffixes?: Record<string, IStatus>;
+}
+
+interface ICategoryStoreState {
+  [category: string]: ICategory;
+}
+
+interface ICategoryStoreActions {
   setItem: (category: string, key: string, status: IStatus) => void;
   setPrefix: (category: string, key: string, status: IStatus) => void;
   setSuffix: (category: string, key: string, status: IStatus) => void;
-  // };
-};
+  setGlobalStatus: (globalStatus: IGlobalStatus) => void;
+}
 
-type ICategoryStore = ICategoryStoreState & ICategoryStoreActions;
+type ICategoryStore = ICategoryStoreStateBase &
+  ICategoryStoreState &
+  ICategoryStoreActions;
 
 const persistStorage = {
   getItem: (key: string) => storage.getItem<string | null>(`local:${key}`),
@@ -36,39 +37,8 @@ const persistStorage = {
 export const useCategoryStore = create<ICategoryStore>()(
   persist(
     (set, get) => ({
-      // setItem: (category, key, status) => {
-      //   const map = get()[category] || {};
-      //   const newMap = {
-      //     ...map,
-      //     items: {
-      //       ...(map.items || {}),
-      //       [key]: status,
-      //     },
-      //   };
-      //   return set({ [category]: newMap });
-      // },
-      // setPrefix: (category, key, status) => {
-      //   const map = get()[category] || {};
-      //   const newMap = {
-      //     ...map,
-      //     prefixes: {
-      //       ...(map.prefixes || {}),
-      //       [key]: status,
-      //     },
-      //   };
-      //   return set({ [category]: newMap });
-      // },
-      // setSuffix: (category, key, status) => {
-      //   const map = get()[category] || {};
-      //   const newMap = {
-      //     ...map,
-      //     suffixes: {
-      //       ...(map.suffixes || {}),
-      //       [key]: status,
-      //     },
-      //   };
-      //   return set({ [category]: newMap });
-      // },
+      globalStatus: "all",
+      setGlobalStatus: (globalStatus) => set((state) => ({ globalStatus })),
       setItem: (category, key, status) =>
         set((state) => {
           const map = state[category] || {};
