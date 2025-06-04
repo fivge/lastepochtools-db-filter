@@ -14,7 +14,6 @@ export default defineContentScript({
     });
 
     if (ctx.isValid) {
-      console.log("********* render 2");
       initUI(ctx);
     }
   },

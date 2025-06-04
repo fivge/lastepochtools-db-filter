@@ -7,7 +7,6 @@ import { ITab } from "./shared/types";
 import { GlobalStatus } from "@/components/global-status";
 
 export const initUI = async (ctx: ContentScriptContext) => {
-  const pathname = window.location.pathname;
   const { category, tab } = scrapeService.getCategory();
 
   if (!category || !tab) {
@@ -19,25 +18,16 @@ export const initUI = async (ctx: ContentScriptContext) => {
 
     const { itemsTitleList, itemsList } = scrapeService.getItemsList();
 
-    console.log("***************** 0", ctx, itemsList);
-
     itemsList.forEach((el) => {
       const { items, ids } = scrapeService.getItems(el, tab);
-      // console.log("***************** 1", items, ids);
       items.forEach((item, index) => {
-        // console.log("***************** 2", item, index);
         renderItemUI(ctx, item, category, tab, ids[index]);
       });
     });
   }, 100);
-
-  console.log("******** category, tab ***** ", category, tab);
 };
 
-const renderGlobalStatus = async (
-  ctx: ContentScriptContext
-  // el: Element,
-) => {
+const renderGlobalStatus = async (ctx: ContentScriptContext) => {
   const ui = await createShadowRootUi(ctx, {
     name: "global-status",
     position: "inline",

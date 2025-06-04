@@ -39,29 +39,16 @@ const getItems = (group: Element, tab: ITab) => {
   return { items, ids };
 };
 
-// document.querySelector("#item-list > div.item-list-group-header.rarity0").textContent += "********** 5 6 7"
-// console.log("***** group title", title);
-
 const getItem = (el: Element, tab: ITab) => {
   const tabMap: any = {
     items: "item-id",
     prefixes: "prefix-id",
     suffixes: "suffix-id",
   };
-  // window.location
-  // item-id="IIwBjIFgJnI"
-  // .getAttribute("item-id")
-  // const id = getItem(el);
-  const itemId = el.querySelector(".item-name")?.getAttribute(tabMap[tab]);
-  //
-  // window.location
-  // item-id="IIwBjIFgJnI"
-  // .getAttribute("item-id")
-  return itemId ?? null;
 
-  // TODO set style for love & hideen
-  // TODO add button to love or hidden
-  // return id;
+  const itemId = el.querySelector(".item-name")?.getAttribute(tabMap[tab]);
+
+  return itemId ?? null;
 };
 
 export const scrapeService = {
