@@ -8,8 +8,6 @@ import { GlobalStatus } from "@/components/global-status";
 
 export const initUI = async (ctx: ContentScriptContext) => {
   const pathname = window.location.pathname;
-  console.log("******** shadow container", ctx, pathname);
-
   const { category, tab } = scrapeService.getCategory();
 
   if (!category || !tab) {
@@ -19,21 +17,19 @@ export const initUI = async (ctx: ContentScriptContext) => {
   setTimeout(() => {
     renderGlobalStatus(ctx);
 
-    if (tab === "items") {
-      const { itemsTitleList, itemsList } = scrapeService.getItemsList();
+    const { itemsTitleList, itemsList } = scrapeService.getItemsList();
 
-      console.log("***************** 0", ctx, itemsList);
+    console.log("***************** 0", ctx, itemsList);
 
-      itemsList.forEach((el) => {
-        const { items, ids } = scrapeService.getItems(el);
-        // console.log("***************** 1", items, ids);
-        items.forEach((item, index) => {
-          // console.log("***************** 2", item, index);
-          renderItemUI(ctx, item, category, tab, ids[index]);
-        });
+    itemsList.forEach((el) => {
+      const { items, ids } = scrapeService.getItems(el, tab);
+      // console.log("***************** 1", items, ids);
+      items.forEach((item, index) => {
+        // console.log("***************** 2", item, index);
+        renderItemUI(ctx, item, category, tab, ids[index]);
       });
-    }
-  }, 500);
+    });
+  }, 100);
 
   console.log("******** category, tab ***** ", category, tab);
 };
@@ -90,7 +86,7 @@ const renderItemUI = async (
       parent?.append(app);
 
       const root = createRoot(app);
-      root.render(<ItemUI el={el} category={category} id={id} />);
+      root.render(<ItemUI el={el} category={category} tab={tab} id={id} />);
       return root;
     },
     onRemove: (root) => {

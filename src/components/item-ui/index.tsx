@@ -1,14 +1,19 @@
-import { IGlobalStatus, IStatus } from "@/entrypoints/content/shared/types";
+import {
+  IGlobalStatus,
+  IStatus,
+  ITab,
+} from "@/entrypoints/content/shared/types";
 import { useCategoryStore } from "@/entrypoints/content/shared/useCategoryStore";
 
 interface IProps {
   el: Element;
   category: string;
+  tab: ITab;
   id: string | null;
 }
 
 export const ItemUI = (props: IProps) => {
-  const { el, category, id } = props;
+  const { el, category, tab, id } = props;
 
   const [status, setStatus] = useState<IStatus>();
   const [globalStatus, setGlobalStatus] = useState<IGlobalStatus>();
@@ -16,7 +21,7 @@ export const ItemUI = (props: IProps) => {
   useEffect(() => {
     const init = async () => {
       const newStatus =
-        useCategoryStore.getState()[category]?.items?.[id ?? "_____"];
+        useCategoryStore.getState()[category]?.[tab]?.[id ?? "_____"];
 
       setStatus(newStatus);
 
@@ -41,7 +46,19 @@ export const ItemUI = (props: IProps) => {
 
   const onClick = async (newStatus: IStatus) => {
     if (id) {
-      useCategoryStore.getState().setItem(category, id, newStatus);
+      switch (tab) {
+        case "items":
+          useCategoryStore.getState().setItem(category, id, newStatus);
+          break;
+        case "prefixes":
+          useCategoryStore.getState().setPrefix(category, id, newStatus);
+          break;
+        case "suffixes":
+          useCategoryStore.getState().setSuffix(category, id, newStatus);
+          break;
+        default:
+          break;
+      }
     }
 
     setStatus(newStatus);

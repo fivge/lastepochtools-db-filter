@@ -1,3 +1,5 @@
+import { ITab } from "./types";
+
 const tabs = ["items", "prefixes", "suffixes"];
 
 const getCategory = () => {
@@ -9,7 +11,9 @@ const getCategory = () => {
     return { category, tab: null };
   }
 
-  return { category, tab };
+  const newTab = tab as ITab;
+
+  return { category, tab: newTab };
 };
 
 const getItemsList = () => {
@@ -20,21 +24,15 @@ const getItemsList = () => {
     "#item-list > div.item-list-group"
   );
 
-  // const foo = document.querySelectorAll("#item-list");
-
-  // console.log("******* getItemsList", itemsTitleList, itemsList, foo);
-
-  // itemsList.length
-
   return { itemsTitleList, itemsList };
 };
 
-const getItems = (group: Element) => {
+const getItems = (group: Element, tab: ITab) => {
   const items = group.querySelectorAll(".item-card");
   const ids: (string | null)[] = [];
 
   items.forEach((item) => {
-    const id = getItem(item);
+    const id = getItem(item, tab);
     ids.push(id);
   });
 
@@ -44,12 +42,18 @@ const getItems = (group: Element) => {
 // document.querySelector("#item-list > div.item-list-group-header.rarity0").textContent += "********** 5 6 7"
 // console.log("***** group title", title);
 
-const getItem = (el: Element) => {
+const getItem = (el: Element, tab: ITab) => {
+  const tabMap: any = {
+    items: "item-id",
+    prefixes: "prefix-id",
+    suffixes: "suffix-id",
+  };
   // window.location
   // item-id="IIwBjIFgJnI"
   // .getAttribute("item-id")
   // const id = getItem(el);
-  const itemId = el.querySelector(".item-name")?.getAttribute("item-id");
+  const itemId = el.querySelector(".item-name")?.getAttribute(tabMap[tab]);
+  //
   // window.location
   // item-id="IIwBjIFgJnI"
   // .getAttribute("item-id")
