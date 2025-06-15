@@ -1,8 +1,10 @@
+const pattern = "*://*.lastepochtools.com/db/*category/*";
+
 export default defineBackground(() => {
   browser.runtime.onMessage.addListener((message, _, sendResponse) => {
     // Grab tabs matching content scripts
     browser.tabs.query({}).then(async (allTabs) => {
-      const contentScriptMatches = new MatchPattern("*://*/*");
+      const contentScriptMatches = new MatchPattern(pattern);
       const contentScriptTabs = allTabs.filter(
         (tab) =>
           tab.id != null &&

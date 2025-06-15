@@ -31,9 +31,13 @@ export const ItemUI = (props: IProps) => {
     };
 
     browser.runtime.onMessage.addListener((message, _, sendResponse) => {
-      const newGlobalStatus = useCategoryStore.getState().globalStatus;
+      if (message?.update === true) {
+        const newGlobalStatus = useCategoryStore.getState().globalStatus;
 
-      setGlobalStatus(newGlobalStatus);
+        setGlobalStatus(newGlobalStatus);
+        sendResponse({ status: "success" });
+      }
+
       return true;
     });
 

@@ -5,7 +5,7 @@ export default defineConfig({
   modules: ["@wxt-dev/module-react"],
   srcDir: "src",
   manifest: {
-    permissions: ["storage"],
+    permissions: ["storage", "tabs"],
   },
   // binaries: {
   //   chrome: "/path/to/chrome-beta", // Use Chrome Beta instead of regular Chrome
